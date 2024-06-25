@@ -79,8 +79,8 @@ function gerarStringAleatoria() {
     const indiceAleatorio = Math.floor(Math.random() * caracteres.length);
     resultado += caracteres[indiceAleatorio];
   }
-
-  return resultado;
+  entrada = document.getElementById("entrada-inp");
+  entrada.value = resultado
 }
 
 function STS() {
