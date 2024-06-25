@@ -34,13 +34,14 @@ var parsingTable = {
     $: "",
   },
 };
-
+// Botões
 let stepBtn = document.querySelector(".btnSTS");
 let newStepBtn = document.querySelector(".btnSTS2");
 newStepBtn.style.display = "none";
 let fastExecBtn = document.querySelector(".fastExecBtn");
 let resetBtn = document.querySelector(".resetBtn");
 
+// Divs das pilhas
 let pilhaE = document.querySelector(".Pilha");
 let entradaE = document.querySelector(".Entrada");
 let acaoE = document.querySelector(".Acao");
@@ -49,6 +50,8 @@ document.addEventListener("DOMContentLoaded", function () {
   stepBtn.style.display = "none";
   fastExecBtn.style.display = "none";
 });
+
+// Função para salvar a entrada
 function submit() {
   stepBtn.style.display = "block";
   entrada = document.getElementById("entrada-inp");
@@ -64,11 +67,14 @@ function submit() {
     entradaB = true;
   }
 }
+
+// Função para checar se a entrada não contém caracteres inválidos
 function isLowerCase(str) {
   let regex = /^[a-c]+$/;
   return regex.test(str);
 }
 
+// Função para gerar uma entrada aleatória
 function gerarStringAleatoria() {
   const tamanhoMaximo = 10;
   const caracteres = "abc";
@@ -83,6 +89,7 @@ function gerarStringAleatoria() {
   entrada.value = resultado
 }
 
+// Função para realizar o primeiro passo do Step to Step
 function STS() {
   if (state === 0) {
     stepBtn.style.display = "none";
@@ -93,6 +100,8 @@ function STS() {
     entradaP[i] = entrada[i];
   }
   console.log(entradaP);
+
+  // Monta a Pilha
   let newP = document.createElement("p");
   newP.textContent = "$S";
   pilhaE.appendChild(newP);
@@ -101,6 +110,7 @@ function STS() {
 
   entradaP.push("$");
 
+  // Monta a Entrada
   let newPContent = document.createElement("p");
   newPContent.textContent = "";
   for (let i = 0; i < entradaP.length; i++) {
@@ -108,12 +118,15 @@ function STS() {
   }
   entradaE.appendChild(newPContent);
 
+  // A partir desta parte do código para baixo começam a ser tratadas as ações da tabela de parsing
   let tokenE = entradaP[0];
 
   let lastToken = pilhaP[pilhaP.length - 1];
   let tokenP = lastToken;
 
+  // A função getAction() pega a proxima ação da tabela através do simbolo no topo das pilhas
   let nextAction = getAction(tokenE, tokenP);
+  
   console.log(nextAction);
   let reversedAction = nextAction.split("").reverse().join("");
   pilhaP.pop();
@@ -123,22 +136,36 @@ function STS() {
   console.log(pilhaP);
 
   let newPAction = document.createElement("p");
+  if(nextAction == "recusou"){
+    let paragrafos = pilhaE.querySelectorAll("p");
+      let numPara = paragrafos.length;
+    newPAction.textContent = `Erro em${numPara} iterações`;
+    actualToken = lastToken;
+    actualAction = nextAction;
+    acaoE.appendChild(newPAction);
+    newStepBtn.style.display = "none";
+      fastExecBtn.style.display = "none";
+  }
+  else{
   newPAction.textContent = `${lastToken} > ${nextAction}`;
   actualToken = lastToken;
   actualAction = nextAction;
   acaoE.appendChild(newPAction);
+  }
 }
 
 function newStep() {
   console.log(pilhaP, entradaP);
   console.log(pilhaP.length);
   actualToken = pilhaP[pilhaP.length - 1];
+  // Caso o Token da Pilha seja um não terminal e diferente do final de pilha
   if (actualToken === actualToken.toUpperCase() && actualToken !== "$") {
     console.log(actualToken, actualAction, "para");
     let resultado = stepStack();
+    // Caso recuse a sentença ou a pilha chegue ao final($) mas a entrada não
     if (
       resultado[0] == "recusou" ||
-      (pilhaP.length < 1 && entradaP[0] !== "$")
+      (pilhaP.length <= 1 && entradaP[0] !== "$")
     ) {
       let newStack = "";
       for (let i = 0; i < pilhaP.length; i++) {
@@ -163,7 +190,9 @@ function newStep() {
 
       newStepBtn.style.display = "none";
       fastExecBtn.style.display = "none";
-    } else if (resultado == "erro") {
+    }
+    // Caso retorne um erro na tabela de parsing
+     else if (resultado == "erro") {
       let newStack = "";
       for (let i = 0; i < pilhaP.length; i++) {
         newStack += pilhaP[i];
@@ -187,7 +216,9 @@ function newStep() {
 
       newStepBtn.style.display = "none";
       fastExecBtn.style.display = "none";
-    } else if (resultado == "epsilon") {
+    }
+    // Quando o epsilon aparece na ação
+    else if (resultado == "epsilon") {
       console.log("eps");
 
       let newStack = "";
@@ -209,8 +240,9 @@ function newStep() {
       newPAction.textContent = `${actualToken} > ε`;
       acaoE.appendChild(newPAction);
       pilhaP.pop();
-    } else {
-      //// ERRRO
+    } 
+    // Caso não haja erro, a execução normal é feita, seguindo a tabela de parsing
+    else {
       console.log(resultado[0], "res 0");
       console.log(resultado[1], "res 1");
       let novaPilha = resultado[0];
@@ -224,9 +256,9 @@ function newStep() {
 
       let newP = document.createElement("p");
       if (pastRead == true) {
-        // caso de erro trocar para o newStack
+        // caso de erro visual na pilha trocar para o newStack2 (pode resolver ou pode dar o erro numero 2)
         newP.textContent += `${newStack}`;
-        pastRead == false;
+        //pastRead == false;
       } else {
         newP.textContent += `${newStack}`;
       }
@@ -244,7 +276,9 @@ function newStep() {
       acaoE.appendChild(newPAction);
       actualAction = nextAction;
     }
-  } else if (pilhaP[0] == entradaP[0] && pilhaP.length > 1) {
+  }
+  // Caso os simbolos sejam iguais mas a pilha tem tamanho maior do que 1
+   else if (pilhaP[0] == entradaP[0] && pilhaP.length > 1) {
     let newStack = "";
     for (let i = 0; i < pilhaP.length; i++) {
       newStack += pilhaP[i];
@@ -268,7 +302,9 @@ function newStep() {
 
     newStepBtn.style.display = "none";
     fastExecBtn.style.display = "none";
-  } else if (pilhaP[0] == "$" && pilhaP.length < 2 && entradaP.length > 1) {
+  } 
+  // Caso a pilha termine mas a entrada não
+  else if (pilhaP.length <= 1 && entradaP.length > 1) {
     let newStack = "";
     for (let i = 0; i < pilhaP.length; i++) {
       newStack += pilhaP[i];
@@ -292,7 +328,9 @@ function newStep() {
 
     newStepBtn.style.display = "none";
     fastExecBtn.style.display = "none";
-  } else if (
+  }
+  // Caso os não terminais sejam iguais
+   else if (
     actualToken === actualToken.toLocaleLowerCase() &&
     actualToken !== "$" &&
     pilhaP[pilhaP.length - 1] == entradaP[0]
@@ -318,8 +356,16 @@ function newStep() {
     acaoE.appendChild(newPAction);
     pilhaP.pop();
     entradaP.shift();
+    /*if(!pastRead){
+      pastRead
+    }
+    else{
+      pastRead = false;
+    }*/
     pastRead = true;
-  } else if (pilhaP[0] == entradaP[0] && pilhaP.length == entradaP.length) {
+  } 
+  // Caso a pilha e a entrada tenham o mesmo tamanho(1), e sejam iguais, a resposta é aceita
+  else if (pilhaP[0] == entradaP[0] && pilhaP.length == entradaP.length) {
     let newStack = "";
     for (let i = 0; i < pilhaP.length; i++) {
       newStack += pilhaP[i];
@@ -346,7 +392,7 @@ function newStep() {
     fastExecBtn.style.display = "none";
   }
 }
-
+// Função para realizar o proximo passo na pilha
 function stepStack() {
   let tokenE = entradaP[0];
   let tokenP = actualToken;
@@ -381,6 +427,7 @@ function stepStack() {
   console.log(pilhaP);
   return [newStack, nextAction];
 }
+// Função para a leitura de não terminais no topo da pilha
 function readStack() {
   let newStack = "";
   for (let i = 0; i < pilhaP.length; i++) {
@@ -410,7 +457,7 @@ function getAction(tokenE, tokenP) {
   }
 }
 
-function fastExec() {}
+function fastExec() { }
 
 function reset() {
   entrada = "";
@@ -422,6 +469,7 @@ function reset() {
   entradaP = [];
   entrada = document.getElementById("entrada-inp");
   entrada.value = "";
+  newStack2 = "";
 
   let paragPilha = pilhaE.getElementsByTagName("p");
   let paragPilhaArray = Array.from(paragPilha);
@@ -444,3 +492,6 @@ function reset() {
     acaoE.removeChild(paragAcao);
   });
 }
+
+// Erro na validação de não terminais diferentes
+// E o erro visual na pilha com o comando após Ler
