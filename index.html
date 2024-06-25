@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analisador Sintático</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./style/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Analisador Sintático Top-Down</h1>
+      </header>
+      <main>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Sentença de Entrada"
+            aria-label="Sentença de Entrada"
+            aria-describedby="button-addon2"
+            id="entrada-inp"
+          />
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            id="button-addon2"
+            onclick="submit()"
+          >
+            Submeter
+          </button>
+        </div>
+
+        <div class="container-infos">
+          <div class="gramatica-container">
+            <h2 class="gram-title">Gramática</h2>
+            <div class="gramatica">
+              <p>S::= aBc | cCb</p>
+              <p>A::= c | bb</p>
+              <p>B::= bAa | ε</p>
+              <p>C::= aSb</p>
+            </div>
+          </div>
+          <div>
+            <h2 class="table-parsing-title">Tabela de Parsing</h2>
+            <table class="table table-bordered">
+                <tr>
+                    <th>δ</th>
+                    <th>a</th>
+                    <th>b</th>
+                    <th>c</th>
+                    <th>$</th>
+                </tr>
+                <tr>
+                    <td>S</td>
+                    <td>S➝ aBc</td>
+                    <td></td>
+                    <td>S➝ cCb</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td></td>
+                    <td>A➝ bb</td>
+                    <td>A➝ c</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td></td>
+                    <td>B➝ bAa</td>
+                    <td>B➝ ε</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>C</td>
+                    <td>C➝ aSb</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+          </div>
+          <div>
+            <h2 class="First-Follow-title">First e Follow</h2>
+            <div class="container-ff">
+                <div class="first">
+                    <h3>First</h3>
+                    <p>S::= a , c</p>
+                    <p>A::= c , b</p>
+                    <p>B::= b , ε</p>
+                    <p>C::= a</p>
+                </div>
+                <div class="follow">
+                    <h3>Follow</h3>
+                    <p>S::= $ , b</p>
+                    <p>A::= a</p>
+                    <p>B::= c</p>
+                    <p>C::= b</p>
+                </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="Analise">
+          <div class="Analise-btns">
+            <button
+            class="btn btn-outline-secondary btnSTS"
+            type="button"
+            id="button-addon2"
+            onclick="STS()"
+          >
+            Passo a Passo
+          </button>
+          <button
+            class="btn btn-outline-secondary btnSTS2"
+            type="button"
+            id="button-addon2"
+            onclick="newStep()"
+          >
+            Novo Passo
+          </button>
+          <button
+            class="btn btn-outline-secondary fastExecBtn"
+            type="button"
+            id="button-addon2"
+            onclick="fastExec()"
+          >
+            Execução Rápida
+          </button>
+          <button
+            class="btn btn-outline-secondary resetBtn"
+            type="button"
+            id="button-addon2"
+            onclick="reset()"
+          >
+            Reset
+          </button>
+          </div>
+          <div class="Pilhas">
+            <div class="Pilha">
+              <h3>Pilha</h3>
+            </div>
+            <div class="Entrada">
+              <h3>Entrada</h3>
+            </div>
+            <div class="Acao">
+              <h3>Ação</h3>
+            </div>
+          </div>
+          
+        </div>
+      </main>
+      <footer>
+        <p>
+          Desenvolvido por: Urias da Rosa | Contato: 099470@aluno.uricer.edu.br
+        </p>
+      </footer>
+    </div>
+  </body>
+  <script src="index.js"></script>
+</html>
