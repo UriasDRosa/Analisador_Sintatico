@@ -69,6 +69,20 @@ function isLowerCase(str) {
   return regex.test(str);
 }
 
+function gerarStringAleatoria() {
+  const tamanhoMaximo = 10;
+  const caracteres = "abc";
+  let resultado = "";
+  const tamanho = Math.floor(Math.random() * tamanhoMaximo) + 1;
+
+  for (let i = 0; i < tamanho; i++) {
+    const indiceAleatorio = Math.floor(Math.random() * caracteres.length);
+    resultado += caracteres[indiceAleatorio];
+  }
+
+  return resultado;
+}
+
 function STS() {
   if (state === 0) {
     stepBtn.style.display = "none";
@@ -211,7 +225,7 @@ function newStep() {
       let newP = document.createElement("p");
       if (pastRead == true) {
         // caso de erro trocar para o newStack
-        newP.textContent += `${newStack2}`;
+        newP.textContent += `${newStack}`;
         pastRead == false;
       } else {
         newP.textContent += `${newStack}`;
@@ -230,6 +244,30 @@ function newStep() {
       acaoE.appendChild(newPAction);
       actualAction = nextAction;
     }
+  } else if (pilhaP[0] == entradaP[0] && pilhaP.length > 1) {
+    let newStack = "";
+    for (let i = 0; i < pilhaP.length; i++) {
+      newStack += pilhaP[i];
+    }
+    let newP = document.createElement("p");
+    newP.textContent += `${newStack}`;
+    pilhaE.appendChild(newP);
+
+    let newPContent = document.createElement("p");
+    newPContent.textContent = "";
+    for (let i = 0; i < entradaP.length; i++) {
+      newPContent.textContent += entradaP[i];
+    }
+    entradaE.appendChild(newPContent);
+
+    let paragrafos = pilhaE.querySelectorAll("p");
+    let numPara = paragrafos.length;
+    let newPAction = document.createElement("p");
+    newPAction.textContent = `Erro em ${numPara} iterações`;
+    acaoE.appendChild(newPAction);
+
+    newStepBtn.style.display = "none";
+    fastExecBtn.style.display = "none";
   } else if (pilhaP[0] == "$" && pilhaP.length < 2 && entradaP.length > 1) {
     let newStack = "";
     for (let i = 0; i < pilhaP.length; i++) {
@@ -281,7 +319,7 @@ function newStep() {
     pilhaP.pop();
     entradaP.shift();
     pastRead = true;
-  } else if (pilhaP[0] == entradaP[0]) {
+  } else if (pilhaP[0] == entradaP[0] && pilhaP.length == entradaP.length) {
     let newStack = "";
     for (let i = 0; i < pilhaP.length; i++) {
       newStack += pilhaP[i];
@@ -313,7 +351,7 @@ function stepStack() {
   let tokenE = entradaP[0];
   let tokenP = actualToken;
   console.log(actualToken, "atual");
-     backStack = pilhaP;
+  backStack = pilhaP;
   let nextAction = getAction(tokenE, tokenP);
 
   if (nextAction == "recusou") {
@@ -327,11 +365,11 @@ function stepStack() {
   }
   for (let i = 0; i < backStack.length; i++) {
     newStack2 += backStack[i];
- }
+  }
   console.log(nextAction);
   pilhaP.pop();
-  
-  console.log(newStack2, "ns2")
+
+  console.log(newStack2, "ns2");
   let reversedAction = nextAction.split("").reverse().join("");
   let newStack = "";
   for (let i = 0; i < reversedAction.length; i++) {
