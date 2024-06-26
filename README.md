@@ -1,3 +1,3 @@
 # Analisador_Sintatico
 
-Rodar um npm init
+Rodar um npm install
